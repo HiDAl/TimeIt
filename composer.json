@@ -1,0 +1,24 @@
+{
+    "name": "HiDAl/TimeIt",
+    "description": "Simple Wrapper for measure times",
+    "keywords": ["timing", "time"],
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Pablo Alcantar Morales",
+            "email": "hidal@radiohead.cl"
+        }
+    ],
+    "type": "project",
+    "require": {
+        "php": ">=5.3"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "5.2.*"
+    },
+    "autoload": {
+        "psr-4": {
+            "HiDAl\\TimeIt\\": "src/"
+        }
+    }
+}

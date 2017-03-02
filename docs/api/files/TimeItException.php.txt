@@ -1,0 +1,6 @@
+<?php
+namespace HiDAl\TimeIt;
+
+class TimeItException extends Exception {
+}
+

@@ -1,0 +1,138 @@
+<?php
+
+namespace HiDAl\TimeIt;
+
+use HiDAl\TimeIt\TimeItException;
+
+/**
+*  A Simple Time Measure
+*
+*  This library focus on measure time, just wrapping microtime
+*
+*  @author Pablo Alcantar Morales
+*/
+class TimeIt {
+  /**  @var int $startTime Moment when time started */
+  private $startTime;
+  /**  @var int $lastInstant Last time when `elapsed` was called */
+  private $lastInstant;
+  /**  @var array $interval array of moments */
+  private $intervals;
+
+  /**
+  * Constructor
+  *
+  * @param boolean $autostart A boolean indicating if the time should auto-start
+  *
+  * @return void
+  */
+  public function __construct($autostart = true) {
+    $this->startTime  = 0;
+    $this->lastInstant = 0;
+    $this->intervals  = array();
+
+    if ($autostart) {
+      $this->start();
+    }
+  }
+
+  /**
+  * Start the timer
+  *
+  * @return float instant when timer started
+  */
+  public function start() {
+    $this->startTime = $this->lastInstant = microtime(true);
+
+    return $this->startTime;
+  }
+
+  /**
+  * Mark a tick. Whenever you need know how much time elapsed.
+  *
+  * @param bool $relative The measure is relative to the last elapsed call or when timer started?
+  *
+  * @return float Time elapsed (relative or absolute)
+  */
+  public function elapsed($relative = true) {
+    if ($this->startTime == 0) {
+      throw new TimeItException("TimeIt must be started!", 1);
+    }
+
+    if ($relative) {
+      $elapsed = microtime(true) - $this->lastInstant;
+
+    } else {
+      $elapsed = microtime(true) - $this->startTime;
+    }
+
+    $this->lastInstant = microtime(true);
+
+    $this->intervals[] = $this->lastInstant;
+
+    return $elapsed * 1000;
+  }
+
+  /**
+  * Return the total time elapsed until this instant
+  *
+  * @return float Elapsed Time
+  *
+  */
+  public function total() {
+    return (microtime(true) - $this->startTime) * 1000;
+  }
+
+  /**
+  * Stop and restart the timer.
+  *
+  * @return float Absolute elapsed time.
+  *
+  */
+  public function stop() {
+    $elapsed = $this->total();
+
+    $this->startTime = 0;
+
+    return $elapsed;
+  }
+
+  /**
+  * Get all ticks marked when elapsed was call
+  *
+  * @return array
+  *
+  */
+  public function getIntervals() {
+    return $this->intervals;
+  }
+
+
+  /**
+  * Static method for measure functions/method/block of codes
+  *
+  * ```
+  * list($took, $return) = TimeIt::plz(function() {
+  *   sleep(10);
+  *
+  *   return 10;
+  * })
+  *
+  * echo $took . PHP_EOL;
+  * echo $return . PHP_EOL;
+  * ```
+  *
+  */
+
+  public static function plz($callback, $arguments = array()) {
+    if (!is_callable($callback)) {
+      throw new Exception("HEY! How do you want I measure the time man? The callback is not callable!", 1);
+    }
+
+    $timeit = new TimeIt;
+    $return = call_user_func_array($callback, $arguments);
+
+    return array($timeit->stop(), $return);
+  }
+}
+
