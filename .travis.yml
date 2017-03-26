@@ -8,9 +8,20 @@ php:
   - hhvm
   - nightly
 
+sudo: false
+
 before_script:
   - composer self-update
-  - composer install --no-interaction
+  - composer clear-cache
+
+install:
+  - travis_retry composer update --no-interaction --no-ansi --no-progress --no-suggest --optimize-autoloader --prefer-stable
 
 script:
-  - phpunit --no-coverage
+  - ./vendor/bin/phpunit --coverage-clover=coverage.xml
+
+after_success:
+  - bash <(curl -s https://codecov.io/bash)
+
+notifications:
+  email: false
