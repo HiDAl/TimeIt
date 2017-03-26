@@ -23,7 +23,9 @@ class TimeItTest extends \PHPUnit_Framework_TestCase {
   public function testTimeItShouldBeStartedBeforeCallElapsed() {
     $time = new TimeIt(false);
 
-    $this->expectException($time->elapsed());
+    // $this->expectException($time->elapsed());
+    $this->setExpectedException(Exception::class);
+    $time->elapsed();
   }
 
   public function testElapsedTimeRelative() {
@@ -84,7 +86,9 @@ class TimeItTest extends \PHPUnit_Framework_TestCase {
 
     $elapsed = $time->stop();
 
-    $this->expectException($time->elapsed());
+    // $this->expectException($time->elapsed());
+    $this->setExpectedException(Exception::class);
+    $time->elapsed();
   }
 
   public function testInstanstEqualZero() {
@@ -112,7 +116,9 @@ class TimeItTest extends \PHPUnit_Framework_TestCase {
    * @expectedException HiDAl\TimeIt\Exception
    */
   public function testPlzBadArguments() {
-    $this->expectException(TimeIt::plz(null));
+    // $this->expectException(TimeIt::plz(null));
+    $this->setExpectedException(Exception::class);
+    TimeIt::plz(null);
   }
 
   public function testPlzWaitOneSecondAndReturnTrue() {
